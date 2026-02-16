@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tamagotchi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { margin: 0; padding: 20px; font-family: sans-serif; text-align: center; }
+    .pet { font-size: 48px; margin: 40px 0; }
+  </style>
+</head>
+<body>
+  <h1>🐾 Tamagotchi</h1>
+  <div class="pet">🤖</div>
+  <p id="greeting">Загрузка...</p>
+
+  <script>
+    // Проверяем, запущено ли в Telegram Mini App
+    if (typeof window.Telegram !== "undefined") {
+      const user = Telegram.WebApp.initDataUnsafe.user;
+      document.getElementById("greeting").textContent = 
+        user ? `Привет, ${user.first_name}!` : "Не удалось получить данные.";
+    } else {
+      document.getElementById("greeting").textContent = 
+        "Это Mini App — откройте через Telegram: t.me/ваш_бот/tama";
+    }
+  </script>
+</body>
+</html>
