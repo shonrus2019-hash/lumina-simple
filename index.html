@@ -1,28 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tamagotchi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { margin: 0; padding: 20px; font-family: sans-serif; text-align: center; }
+    .pet { font-size: 48px; margin: 40px 0; }
+    button { margin-top: 20px; padding: 12px 24px; font-size: 16px; }
+  </style>
+</head>
 <body>
   <h1>🐾 Tamagotchi</h1>
   <div class="pet">🤖</div>
   <p id="greeting">Загрузка...</p>
-  <button id="feedBtn" style="margin-top: 20px; padding: 12px 24px; font-size: 16px;">
-    Покормить
-  </button>
+  <button id="feedBtn">Покормить</button>
 
-  <script>
-    const greeting = document.getElementById("greeting");
-    const feedBtn = document.getElementById("feedBtn");
-
-    // Получаем данные пользователя из Telegram
-    if (typeof window.Telegram !== "undefined") {
-      const user = Telegram.WebApp.initDataUnsafe.user;
-      greeting.textContent = user ? `Привет, ${user.first_name}!` : "Не удалось загрузить данные.";
-    } else {
-      greeting.textContent = "Откройте в Telegram: t.me/ваш_бот/tama";
-    }
-
-    // Обработка клика
-    feedBtn.addEventListener("click", () => {
-      greeting.textContent = "Спасибо! Я сыт! 🍽️";
-      feedBtn.disabled = true;
-      feedBtn.textContent = "Уже покормили!";
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
+</html>
