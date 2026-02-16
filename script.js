@@ -1,5 +1,3 @@
-// script.js
-
 let petState = {
   isHungry: true,
   energy: 50,
@@ -9,22 +7,53 @@ let petState = {
 const greeting = document.getElementById("greeting");
 const feedBtn = document.getElementById("feedBtn");
 
-function initApp() {
-  // Получаем данные пользователя из Telegram
-  if (typeof window.Telegram !== "undefined") {
-    const user = Telegram.WebApp.initDataUnsafe.user;
-    updateUI(user?.first_name || "друг");
-  } else {
-    greeting.textContent = "Откройте в Telegram: t.me/ваш_бот/tama";
+async function initApp() {
+  if (!window.Telegram?.WebApp) {
+    greeting.textContent = "Ошибка: откройте в Telegram.";
+    return;
+  }
+
+  const tg = window.Telegram.WebApp;
+
+  // Отправляем initData на сервер для проверки
+  try {
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ initData: tg.initData }),
+    });
+
+    if (!response.ok) throw new Error("Не удалось проверить данные.");
+
+    const userData = await response.json();
+    updateUI(userData.first_name);
+  } catch (e) {
+    greeting.textContent = "Ошибка авторизации: " + e.message;
   }
 
   // Обработка клика
-  feedBtn.addEventListener("click", () => {
+  feedBtn.addEventListener("click", async () => {
     petState.isHungry = false;
     petState.mood += 10;
     petState.energy += 5;
-    updateUI(Telegram.WebApp.initDataUnsafe.user?.first_name || "друг");
+
+    // Отправляем обновление на сервер (например, сохранение в БД)
+    await savePetState();
+
+    updateUI(tg.initDataUnsafe.user?.first_name || "друг");
   });
+}
+
+async function savePetState() {
+  try {
+    await fetch('/api/update-pet', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(petState),
+    });
+  } catch (e) {
+    console.error("Ошибка сохранения состояния:", e);
+  }
 }
 
 function updateUI(name) {
